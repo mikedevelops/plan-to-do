@@ -1,5 +1,7 @@
+import {createTask} from "./Managers/TaskManager";
 
-function main() {
-  console.log("READY!");
-}
 
+(async () => {
+  const task = await createTask({ content: "Hello, World!" });
+  console.log(task)
+})();

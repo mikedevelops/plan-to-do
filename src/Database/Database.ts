@@ -1,21 +1,8 @@
-import {Database} from "sqlite3";
+import {Database, Statement} from "sqlite3";
 import {ConfigValue, getConfigValue} from "../Config/ConfigLoader";
 
-export const sqlAll = <T>(db: Database, sql: string): Promise<T[]> =>{
-  return new Promise((resolve, reject) => {
-    db.all(sql, (err: Error|null, result: T[]) => {
-      if (err !== null) {
-        reject(err);
-
-        return;
-      }
-
-      resolve(result as T[]);
-    })
-  });
-};
-
-export const sqlRun = (db: Database, sql: string): Promise<void> => {
+export const run = async (sql: string): Promise<void> => {
+  const db = await getConnection();
   return new Promise((resolve, reject) => {
     db.run(sql, (err: Error|null) => {
       if (err !== null) {
@@ -26,6 +13,34 @@ export const sqlRun = (db: Database, sql: string): Promise<void> => {
 
       resolve();
     })
+  });
+};
+
+export const all = async <T>(sql: string): Promise<T[]> => {
+  const connection = await getConnection();
+  return new Promise((resolve, reject) => {
+    connection.all(sql, (err: Error|null, rows: T[]) => {
+      if (err !== null) {
+        reject(err);
+        return;
+      }
+
+      resolve(rows);
+    });
+  });
+}
+
+export const get = async <T>(sql: string): Promise<T> => {
+  const connection = await getConnection();
+  return new Promise((resolve, reject) => {
+    connection.get(sql, (error: Error|null, result: T) => {
+      if (error !== null) {
+        reject(error);
+        return;
+      }
+
+      resolve(result);
+    });
   });
 };
 
