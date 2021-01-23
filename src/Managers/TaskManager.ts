@@ -33,6 +33,16 @@ export const parseTask = (task: SerialisedTask): Task => {
   }
 };
 
+export const getTask = async (id: number): Promise<Task|null> => {
+  const task = await sql.get<SerialisedTask>(`SELECT * from tasks where id=${id}`);
+
+  if (task === undefined) {
+    return null;
+  }
+
+  return parseTask(task);
+};
+
 export const createTask = async (params: TaskParams): Promise<Task> => {
   await sql.run(`
     INSERT INTO tasks 
@@ -44,5 +54,10 @@ export const createTask = async (params: TaskParams): Promise<Task> => {
   `);
 
   return parseTask(task);
+};
+
+export const setTaskComplete = async (task: Task, complete: boolean): Promise<Task> => {
+  await sql.run(`UPDATE tasks set complete=${complete ? 1 : 0}`);
+  return Object.assign({}, task, { complete });
 };
 
