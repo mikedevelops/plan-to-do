@@ -1,14 +1,14 @@
 import meow from "meow";
-import {createTask} from "../Managers/TaskManager";
+import { createTask } from "~/src/Tasks/TaskService";
 
 const cli = meow("Create a task", {
   flags: {
     content: {
       type: "string",
       alias: "c",
-      isRequired: true
-    }
-  }
+      isRequired: true,
+    },
+  },
 });
 
 (async () => {

@@ -4,7 +4,5 @@ export default {
   get,
   all,
   run,
-  getConnection
+  getConnection,
 };
-
-

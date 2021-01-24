@@ -1,16 +1,16 @@
 import meow from "meow";
-import { setTaskComplete, getTask } from "~/src/Tasks/TaskService";
+import { setTaskArchived, getTask } from "~/src/Tasks/TaskService";
 
-const cli = meow("Set a task (in)complete", {
+const cli = meow("Set a task (un)archived", {
   flags: {
     task: {
       type: "number",
       alias: "t",
       isRequired: true,
     },
-    complete: {
+    archived: {
       type: "boolean",
-      alias: "c",
+      alias: "a",
       default: true,
     },
   },
@@ -25,6 +25,6 @@ const cli = meow("Set a task (in)complete", {
     return;
   }
 
-  task = await setTaskComplete(task, cli.flags.complete);
+  task = await setTaskArchived(task, cli.flags.archived);
   console.log("Updated 1 Task", task);
 })();

@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 
 export enum ConfigValue {
-  DB_LOCATION = "DB_LOCATION"
+  DB_LOCATION = "DB_LOCATION",
 }
 
 interface Config {
@@ -53,4 +53,4 @@ export const getConfigValue = (key: ConfigValue): string => {
   }
 
   return value;
-}
+};

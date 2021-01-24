@@ -1,6 +1,11 @@
 {
-  "include": ["src"],
+  "include": ["src", "tests"],
   "compilerOptions": {
+    "noEmit": true,
+    "baseUrl": "./",
+    "paths": {
+      "~/*": ["./*"]
+    },
     "jsx": "react",
     "incremental": true,
     "lib": ["ESNext"],
