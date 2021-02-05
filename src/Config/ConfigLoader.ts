@@ -1,56 +1,62 @@
 import fs from "fs";
 import path from "path";
-
-export enum ConfigValue {
-  DB_LOCATION = "DB_LOCATION",
-}
-
-interface Config {
-  [ConfigValue.DB_LOCATION]: string;
-}
+import { ConfigValue, Config, ConfigValues } from "./types";
 
 const isField = (key: string): boolean =>
   Object.values(ConfigValue).includes(key as ConfigValue);
 
-const CONFIG_FILE: string = path.resolve(__dirname, "../../.env");
-let rawConfig: string;
+let config: ConfigValues | null = null;
 
-try {
-  rawConfig = fs.readFileSync(CONFIG_FILE, "utf8");
-} catch (err) {
-  console.log(`Unable to read config file ${CONFIG_FILE}`);
-  process.exit(0);
-}
+const parseConfig = (): ConfigValues => {
+  const location = path.resolve(
+    __dirname,
+    `../../${process.env.ENV_PATH || ".env"}`
+  );
+  let file: string;
 
-const config: Config = rawConfig.split("\n").reduce((config: Config, line) => {
-  if (line === "") {
+  try {
+    file = fs.readFileSync(location, "utf8");
+  } catch (error) {
+    throw new Error(`Could not locate/read file! "${location}"`);
+  }
+
+  return file.split("\n").reduce((config: ConfigValues, line) => {
+    if (line === "") {
+      return config;
+    }
+
+    const [key, val] = line.split("=");
+
+    if (key === undefined || val === undefined) {
+      throw new Error(`Unable to read line "${line}" as config`);
+    }
+
+    if (!isField(key)) {
+      throw new Error(`Invalid config key "${key}"`);
+    }
+
+    config[key as ConfigValue] = val;
+
     return config;
-  }
+  }, {} as ConfigValues);
+};
 
-  const [key, val] = line.split("=");
+export default (): Config => {
+  const getValue = (key: ConfigValue): string => {
+    if (config === null) {
+      config = parseConfig();
+    }
 
-  if (key === undefined || val === undefined) {
-    console.warn(`Unable to read line "${line}" as config`);
-    return config;
-  }
+    const value = config[key];
 
-  if (!isField(key)) {
-    console.warn(`Invalid config key "${key}"`);
-    return config;
-  }
+    if (value === undefined) {
+      throw new Error(`No config value found for key "${key}"`);
+    }
 
-  config[key as ConfigValue] = val;
+    return value;
+  };
 
-  return config;
-}, {} as Config);
+  const reload = () => (config = null);
 
-export const getConfigValue = (key: ConfigValue): string => {
-  const value = config[key];
-
-  if (value === undefined) {
-    console.warn(`No config value found for key "${key}"`);
-    return "";
-  }
-
-  return value;
+  return { getValue, reload };
 };

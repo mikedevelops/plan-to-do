@@ -1,10 +1,10 @@
-import sql from "~/src/Database";
-import * as TaskManager from "~/src/Tasks/TaskService";
+import * as sql from "~/src/Database/DatabaseService";
 import { SerialisedTask, Task } from "~/src/Tasks/TaskTypes";
 import { parseTask } from "~/src/Tasks/TaskParser";
 import { AssertionError } from "assert";
 
-jest.mock("~/src/Database");
+jest.mock("~/src/Database/DatabaseService");
+jest.mock("~/src/Database/ConnectionFactory");
 jest.mock("~/src/Tasks/TaskService");
 jest.mock("~/src/Tasks/TaskParser");
 

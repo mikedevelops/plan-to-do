@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
-import sql from "./index";
+import * as sql from "~/src/Database/DatabaseService";
+import getConnection from "~/src/Database/ConnectionFactory";
 
 interface Migration {
   migration: string;
@@ -9,16 +10,21 @@ interface Migration {
 const MIGRATION_DIR = path.resolve(__dirname, "../../migrations");
 
 (async () => {
-  await sql.run(`
-    CREATE TABLE IF NOT EXISTS migrations (
-      id INTEGER PRIMARY KEY, 
-      migration TEXT,
-      lastExecuted TEXT
-    )
-  `);
+  const db = await getConnection();
+
+  await sql.run(
+    db,
+    `
+      CREATE TABLE IF NOT EXISTS migrations (
+        id INTEGER PRIMARY KEY, 
+        migration TEXT,
+        lastExecuted TEXT
+      )
+    `
+  );
 
   const executed = (
-    await sql.all<Migration>("SELECT migration FROM migrations")
+    await sql.all<Migration>(db, "SELECT migration FROM migrations")
   ).map((row: Migration) => row.migration);
   const migrations = fs
     .readdirSync(MIGRATION_DIR)
@@ -27,17 +33,20 @@ const MIGRATION_DIR = path.resolve(__dirname, "../../migrations");
 
   for (const migration of migrations) {
     try {
-      await require(migration).default(await sql.getConnection());
+      await require(migration).default(db);
     } catch (err) {
       console.log(`Error running migration "${migration}"`, err);
       process.exit(0);
     }
 
-    await sql.run(`
-      INSERT INTO migrations
-        (migration, lastExecuted)
-        VALUES ('${migration}', '${new Date().toISOString()}')
-    `);
+    await sql.run(
+      db,
+      `
+        INSERT INTO migrations
+          (migration, lastExecuted)
+          VALUES ('${migration}', '${new Date().toISOString()}')
+      `
+    );
 
     console.log(`SUCCESS ${migration}`);
   }

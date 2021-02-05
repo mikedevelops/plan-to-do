@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "prettier src/**/*.ts tests/**/*.ts --write",
     "dev": "tsc --watch",
-    "test": "jest --watch"
+    "test": "ENV_PATH=./tests/.test.env jest --watch"
   },
   "pre-commit": [
     "lint"

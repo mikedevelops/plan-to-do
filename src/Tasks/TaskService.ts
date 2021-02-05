@@ -1,4 +1,5 @@
-import sql from "~/src/Database/";
+import * as sql from "~/src/Database/DatabaseService";
+import getConnection from "~/src/Database/ConnectionFactory";
 import { serialiseDate } from "~/src/Utils/Date";
 import { SerialisedTask, Task } from "./TaskTypes";
 import { parseTask } from "./TaskParser";
@@ -10,6 +11,7 @@ interface TaskParams {
 
 export const getTask = async (id: number): Promise<Task | null> => {
   const task = await sql.get<SerialisedTask>(
+    await getConnection(),
     `SELECT * from tasks where id=${id}`
   );
 
@@ -21,17 +23,17 @@ export const getTask = async (id: number): Promise<Task | null> => {
 };
 
 export const createTask = async (params: TaskParams): Promise<Task> => {
-  const updated: number = await sql.run(`
-    INSERT INTO tasks 
-      (content)
-      VALUES ('${params.content}')
-  `);
+  const updated: number = await sql.run(
+    await getConnection(),
+    `INSERT INTO tasks (content) VALUES ('${params.content}')`
+  );
 
   assert.equal(updated, 1, "createTask should update 1 row");
 
-  const task = await sql.get<SerialisedTask>(`
-    SELECT * FROM tasks ORDER BY id DESC LIMIT 1
-  `);
+  const task = await sql.get<SerialisedTask>(
+    await getConnection(),
+    `SELECT * FROM tasks ORDER BY id DESC LIMIT 1`
+  );
 
   return parseTask(task);
 };
@@ -42,6 +44,7 @@ export const setTaskComplete = async (
 ): Promise<Task> => {
   const now = new Date();
   const updated = await sql.run(
+    await getConnection(),
     `UPDATE tasks 
       set complete=${complete ? 1 : 0},
         modified='${serialiseDate(now)}'
@@ -60,6 +63,7 @@ export const setTaskArchived = async (
 ): Promise<Task> => {
   const now = new Date();
   const updated = await sql.run(
+    await getConnection(),
     `UPDATE tasks 
       set archived=${archive ? 1 : 0}, 
         modified='${serialiseDate(now)}'
