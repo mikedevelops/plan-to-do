@@ -28,7 +28,7 @@ export const createTask = async (params: TaskParams): Promise<Task> => {
     `INSERT INTO tasks (content) VALUES ('${params.content}')`
   );
 
-  assert.equal(updated, 1, "createTask should update 1 row");
+  assert.strictEqual(updated, 1, "createTask should update 1 row");
 
   const task = await sql.get<SerialisedTask>(
     await getConnection(),
@@ -52,7 +52,7 @@ export const setTaskComplete = async (
   `
   );
 
-  assert.equal(updated, 1, "setTaskComplete should update 1 row");
+  assert.strictEqual(updated, 1, "setTaskComplete should update 1 row");
 
   return Object.assign({}, task, { complete, modified: now });
 };
@@ -71,7 +71,7 @@ export const setTaskArchived = async (
   `
   );
 
-  assert.equal(updated, 1, "setTaskArchived should update 1 row");
+  assert.strictEqual(updated, 1, "setTaskArchived should update 1 row");
 
   return Object.assign({}, task, { archived: archive, modified: now });
 };
