@@ -2,14 +2,15 @@ import { sql, getConnection } from "~/src/api/Database";
 import { serialiseDate } from "~/src/api/Time";
 import { deserialize } from "./TaskFactory";
 import assert from "assert";
-import type { SerialisedTask, Task } from "./TaskTypes";
+import type { TaskSerialised } from "./types";
+import { Task } from "~/src/common/Tasks/types";
 
 interface TaskParams {
   content: string;
 }
 
 export const getById = async (id: number): Promise<Task | null> => {
-  const task = await sql.getOne<SerialisedTask>(
+  const task = await sql.getOne<TaskSerialised>(
     await getConnection(),
     `SELECT * from tasks where id=${id}`
   );
@@ -29,7 +30,7 @@ export const create = async (params: TaskParams): Promise<Task> => {
 
   assert.strictEqual(updated, 1, "createTask should update 1 row");
 
-  const task = await sql.getOne<SerialisedTask>(
+  const task = await sql.getOne<TaskSerialised>(
     await getConnection(),
     `SELECT * FROM tasks ORDER BY id DESC LIMIT 1`
   );
@@ -79,7 +80,7 @@ export const getAll = async (
   limit: number,
   offset: number
 ): Promise<Task[]> => {
-  const tasks = await sql.getAll<SerialisedTask>(
+  const tasks = await sql.getAll<TaskSerialised>(
     await getConnection(),
     `SELECT * from tasks 
           ORDER BY created

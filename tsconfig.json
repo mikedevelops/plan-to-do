@@ -7,7 +7,7 @@
       "~/*": ["./*"]
     },
     "jsx": "react",
-    "lib": ["ESNext"],
+    "lib": ["ESNext", "dom"],
     "outDir": "dist",
     "target": "es6",
     "module": "commonjs",

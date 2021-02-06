@@ -1,13 +1,4 @@
-export interface Task {
-  id: number;
-  content: string;
-  archived: boolean;
-  complete: boolean;
-  created: Date;
-  modified: Date;
-}
-
-export interface SerialisedTask {
+export interface TaskSerialised {
   id: number;
   content: string;
   archived: number;

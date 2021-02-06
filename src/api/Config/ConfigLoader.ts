@@ -10,7 +10,7 @@ let config: ConfigValues | null = null;
 const parseConfig = (): ConfigValues => {
   const location = path.resolve(
     __dirname,
-    `../../${process.env.ENV_PATH || ".env"}`
+    `../../../${process.env.ENV_PATH || ".env"}`
   );
   let file: string;
 

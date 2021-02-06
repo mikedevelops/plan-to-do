@@ -1,5 +1,6 @@
 export enum ConfigValue {
   DB_LOCATION = "DB_LOCATION",
+  API_PORT = "API_PORT",
 }
 
 export interface Config {
@@ -9,4 +10,5 @@ export interface Config {
 
 export interface ConfigValues {
   [ConfigValue.DB_LOCATION]: string;
+  [ConfigValue.API_PORT]: string;
 }

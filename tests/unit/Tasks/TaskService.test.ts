@@ -1,7 +1,8 @@
 import { sql } from "~/src/api/Database";
-import type { SerialisedTask, Task } from "~/src/api/Tasks/TaskTypes";
+import type { TaskSerialised } from "~/src/api/Tasks/types";
 import * as Tasks from "~/src/api/Tasks";
 import { AssertionError } from "assert";
+import { Task } from "~/src/common/Tasks/types";
 
 jest.mock("~/src/api/Database/DatabaseService");
 jest.mock("~/src/api/Database/ConnectionFactory");
@@ -24,7 +25,7 @@ describe("Tasks", () => {
     test("Should return a task", async () => {
       const created = new Date(1988, 9, 3, 22, 30);
       const modified = new Date(1988, 9, 3, 22, 30);
-      const serialisedTask: SerialisedTask = {
+      const serialisedTask: TaskSerialised = {
         id: 666,
         content: "Hello, World!",
         archived: 0,
@@ -53,7 +54,7 @@ describe("Tasks", () => {
     test("Should create a task and return it", async () => {
       const created = new Date(1988, 9, 3, 22, 30);
       const modified = new Date(1988, 9, 3, 22, 45);
-      const serialisedTask: SerialisedTask = {
+      const serialisedTask: TaskSerialised = {
         id: 666,
         content: "Hello, World",
         complete: 0,

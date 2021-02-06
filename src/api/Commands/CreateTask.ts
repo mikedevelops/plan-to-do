@@ -1,3 +1,5 @@
+#!/usr/bin/env ts-node -r tsconfig-paths/register
+
 import meow from "meow";
 import { create } from "~/src/api/Tasks/TaskService";
 

@@ -5,6 +5,15 @@ import {
   setArchived,
   setComplete,
 } from "./TaskService";
-import { deserialize } from "~/src/api/Tasks/TaskFactory";
+import { deserialize } from "./TaskFactory";
+import { transform } from "./TaskTransformer";
 
-export { create, getAll, getById, setArchived, setComplete, deserialize };
+export {
+  create,
+  getAll,
+  getById,
+  setArchived,
+  setComplete,
+  deserialize,
+  transform,
+};
