@@ -4,12 +4,14 @@ import {
   getById,
   setArchived,
   setComplete,
+  update,
 } from "./TaskService";
 import { deserialize } from "./TaskFactory";
 import { transform } from "./TaskTransformer";
 
 export {
   create,
+  update,
   getAll,
   getById,
   setArchived,

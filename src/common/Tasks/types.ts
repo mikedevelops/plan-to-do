@@ -15,3 +15,10 @@ export interface TaskResponseModel {
   created: string;
   modified: string;
 }
+
+export interface TaskUpdateFields {
+  content?: string;
+  archived?: boolean;
+  complete?: boolean;
+  [key: string]: string | boolean | undefined;
+}

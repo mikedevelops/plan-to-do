@@ -4,6 +4,8 @@ export interface LogTransport {
 
 export enum LogLevel {
   INFO = "INFO",
+  REQ = "REQ",
+  SQL = "SQL",
 }
 
 export type CreateLog = (content: string) => void;

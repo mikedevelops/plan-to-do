@@ -26,7 +26,7 @@ router.patch("/task/:id", async (req, res) => {
   }
 
   // TODO: validate body
-  const updatedTask = await Tasks.setComplete(task, req.body.complete);
+  const updatedTask = await Tasks.update(task, req.body);
 
   res.json(Tasks.transform(updatedTask));
 });

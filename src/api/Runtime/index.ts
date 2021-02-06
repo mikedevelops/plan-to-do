@@ -6,6 +6,7 @@ import * as Logger from "~/src/api/Logger";
 import { TaskRouter } from "~/src/api/Routers";
 import cors from "cors";
 import bodyParser from "body-parser";
+import { loggerMiddleware } from "~/src/api/Logger/LoggingMiddleware";
 
 const config = getConfig();
 const api = express();
@@ -20,6 +21,7 @@ api.use(
   })
 );
 api.use(bodyParser.json());
+api.use(loggerMiddleware);
 
 /**
  * API
@@ -34,5 +36,5 @@ api.get("/status", (req, res) => {
 });
 
 api.listen(port, () => {
-  Logger.info(`API running on ${port}`);
+  Logger.logInfo(`API running on ${port}`);
 });
