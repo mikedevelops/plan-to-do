@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
-import * as sql from "~/src/Database/DatabaseService";
-import getConnection from "~/src/Database/ConnectionFactory";
+import * as sql from "~/src/api/Database/DatabaseService";
+import getConnection from "~/src/api/Database/ConnectionFactory";
 
 interface Migration {
   migration: string;
@@ -24,7 +24,7 @@ const MIGRATION_DIR = path.resolve(__dirname, "../../migrations");
   );
 
   const executed = (
-    await sql.all<Migration>(db, "SELECT migration FROM migrations")
+    await sql.getAll<Migration>(db, "SELECT migration FROM migrations")
   ).map((row: Migration) => row.migration);
   const migrations = fs
     .readdirSync(MIGRATION_DIR)

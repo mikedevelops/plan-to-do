@@ -1,30 +1,22 @@
-import * as sql from "~/src/Database/DatabaseService";
-import { SerialisedTask, Task } from "~/src/Tasks/TaskTypes";
-import { parseTask } from "~/src/Tasks/TaskParser";
+import { sql } from "~/src/api/Database";
+import type { SerialisedTask, Task } from "~/src/api/Tasks/TaskTypes";
+import * as Tasks from "~/src/api/Tasks";
 import { AssertionError } from "assert";
 
-jest.mock("~/src/Database/DatabaseService");
-jest.mock("~/src/Database/ConnectionFactory");
-jest.mock("~/src/Tasks/TaskService");
-jest.mock("~/src/Tasks/TaskParser");
+jest.mock("~/src/api/Database/DatabaseService");
+jest.mock("~/src/api/Database/ConnectionFactory");
+jest.mock("~/src/api/Tasks/TaskFactory");
 
-const parseTaskMock = parseTask as jest.Mock<any>;
-const sqlGetMock = sql.get as jest.Mock<any>;
-const sqlRunMock = sql.run as jest.Mock<any>;
+const deserializeMock = Tasks.deserialize as jest.Mock;
+const sqlGetMock = sql.getOne as jest.Mock;
+const sqlRunMock = sql.run as jest.Mock;
 
-describe("TaskService", () => {
-  const {
-    getTask,
-    createTask,
-    setTaskComplete,
-    setTaskArchived,
-  } = jest.requireActual("~/src/Tasks/TaskService");
-
+describe("Tasks", () => {
   describe("getTask", () => {
     test("Should return null for a task not found", async () => {
       sqlGetMock.mockReturnValue(Promise.resolve(undefined));
 
-      const task = await getTask(666);
+      const task = await Tasks.getById(666);
 
       expect(task).toBeNull();
     });
@@ -49,9 +41,9 @@ describe("TaskService", () => {
         modified: modified,
       };
       sqlGetMock.mockReturnValue(Promise.resolve(serialisedTask));
-      parseTaskMock.mockReturnValue(Promise.resolve(parsedTask));
+      deserializeMock.mockReturnValue(Promise.resolve(parsedTask));
 
-      const task = await getTask(666);
+      const task = await Tasks.getById(666);
 
       expect(task).toEqual(parsedTask);
     });
@@ -79,9 +71,9 @@ describe("TaskService", () => {
       };
       sqlRunMock.mockReturnValue(Promise.resolve(1));
       sqlGetMock.mockReturnValue(Promise.resolve(serialisedTask));
-      parseTaskMock.mockReturnValue(Promise.resolve(parsedTask));
+      deserializeMock.mockReturnValue(Promise.resolve(parsedTask));
 
-      const task = await createTask({ content: "Hello, World!" });
+      const task = await Tasks.create({ content: "Hello, World!" });
 
       expect(task).toEqual({
         id: 666,
@@ -108,7 +100,7 @@ describe("TaskService", () => {
       };
       sqlRunMock.mockReturnValue(Promise.resolve(1));
 
-      const updatedTask = await setTaskComplete(task, true);
+      const updatedTask = await Tasks.setComplete(task, true);
 
       expect(updatedTask.modified.getTime()).toBeGreaterThan(
         task.modified.getTime()
@@ -136,7 +128,7 @@ describe("TaskService", () => {
       };
       sqlRunMock.mockReturnValue(Promise.resolve(1));
 
-      const updatedTask = await setTaskComplete(task, false);
+      const updatedTask = await Tasks.setComplete(task, false);
 
       expect(updatedTask.modified.getTime()).toBeGreaterThan(
         task.modified.getTime()
@@ -167,7 +159,7 @@ describe("TaskService", () => {
       expect.assertions(1);
 
       try {
-        await setTaskComplete(task, false);
+        await Tasks.setComplete(task, false);
       } catch (error) {
         expect(error).toBeInstanceOf(AssertionError);
       }
@@ -188,7 +180,7 @@ describe("TaskService", () => {
       };
       sqlRunMock.mockReturnValue(Promise.resolve(1));
 
-      const updatedTask = await setTaskArchived(task, true);
+      const updatedTask = await Tasks.setArchived(task, true);
 
       expect(updatedTask.modified.getTime()).toBeGreaterThan(
         task.modified.getTime()
@@ -216,7 +208,7 @@ describe("TaskService", () => {
       };
       sqlRunMock.mockReturnValue(Promise.resolve(1));
 
-      const updatedTask = await setTaskArchived(task, false);
+      const updatedTask = await Tasks.setArchived(task, false);
 
       expect(updatedTask.modified.getTime()).toBeGreaterThan(
         task.modified.getTime()
@@ -247,10 +239,14 @@ describe("TaskService", () => {
       expect.assertions(1);
 
       try {
-        await setTaskArchived(task, false);
+        await Tasks.setArchived(task, false);
       } catch (error) {
         expect(error).toBeInstanceOf(AssertionError);
       }
     });
+  });
+
+  describe("getTasks", () => {
+    test("Should return a task list", () => {});
   });
 });

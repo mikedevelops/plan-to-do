@@ -1,5 +1,4 @@
-import { run, all, get } from "~/src/Database/DatabaseService";
-import { mocked } from "ts-jest/utils";
+import { sql } from "~/src/api/Database";
 
 const db = {
   run: jest.fn(),
@@ -12,7 +11,7 @@ describe("Database", () => {
     test("Should run the query and return the updated row count", (done) => {
       expect.assertions(1);
 
-      run(db, "SQL").then((rows: number) => {
+      sql.run(db, "SQL").then((rows: number) => {
         expect(rows).toBe(666);
         done();
       });
@@ -25,7 +24,7 @@ describe("Database", () => {
 
       expect.assertions(1);
 
-      run(db, "SQL").catch((error: Error) => {
+      sql.run(db, "SQL").catch((error: Error) => {
         expect(error).toBe(err);
         done();
       });
@@ -40,7 +39,7 @@ describe("Database", () => {
 
       expect.assertions(1);
 
-      all(db, "SQL").then((rows: any[]) => {
+      sql.getAll(db, "SQL").then((rows: any[]) => {
         expect(rows).toBe(data);
         done();
       });
@@ -53,7 +52,7 @@ describe("Database", () => {
 
       expect.assertions(1);
 
-      all(db, "SQL").catch((error: Error) => {
+      sql.getAll(db, "SQL").catch((error: Error) => {
         expect(error).toBe(err);
         done();
       });
@@ -68,7 +67,7 @@ describe("Database", () => {
 
       expect.assertions(1);
 
-      get(db, "SQL").then((row: any) => {
+      sql.getOne(db, "SQL").then((row: any) => {
         expect(row).toBe(data);
         done();
       });
@@ -81,7 +80,7 @@ describe("Database", () => {
 
       expect.assertions(1);
 
-      get(db, "SQL").catch((error: Error) => {
+      sql.getOne(db, "SQL").catch((error: Error) => {
         expect(error).toBe(err);
         done();
       });

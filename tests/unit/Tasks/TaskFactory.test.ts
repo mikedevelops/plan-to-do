@@ -1,9 +1,9 @@
-import { parseTask } from "~/src/Tasks/TaskParser";
-import { SerialisedTask } from "~/src/Tasks/TaskTypes";
+import * as Tasks from "~/src/api/Tasks";
+import type { SerialisedTask } from "~/src/api/Tasks/TaskTypes";
 
-describe("TaskParser", () => {
-  describe("parseTask", () => {
-    test("Should parase a serialised task", () => {
+describe("TaskFactory", () => {
+  describe("deserialize", () => {
+    test("Should parse a serialised task", () => {
       const created = new Date(1988, 9, 3, 22, 30);
       const modified = new Date(1988, 9, 6, 22, 30);
       const serialisedTask: SerialisedTask = {
@@ -15,7 +15,7 @@ describe("TaskParser", () => {
         modified: modified.toString(),
       };
 
-      const parsedTask = parseTask(serialisedTask);
+      const parsedTask = Tasks.deserialize(serialisedTask);
 
       expect(parsedTask).toEqual({
         id: 666,

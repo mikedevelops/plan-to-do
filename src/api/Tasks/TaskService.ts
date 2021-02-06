@@ -1,16 +1,15 @@
-import * as sql from "~/src/Database/DatabaseService";
-import getConnection from "~/src/Database/ConnectionFactory";
-import { serialiseDate } from "~/src/Utils/Date";
-import { SerialisedTask, Task } from "./TaskTypes";
-import { parseTask } from "./TaskParser";
+import { sql, getConnection } from "~/src/api/Database";
+import { serialiseDate } from "~/src/api/Time";
+import { deserialize } from "./TaskFactory";
 import assert from "assert";
+import type { SerialisedTask, Task } from "./TaskTypes";
 
 interface TaskParams {
   content: string;
 }
 
-export const getTask = async (id: number): Promise<Task | null> => {
-  const task = await sql.get<SerialisedTask>(
+export const getById = async (id: number): Promise<Task | null> => {
+  const task = await sql.getOne<SerialisedTask>(
     await getConnection(),
     `SELECT * from tasks where id=${id}`
   );
@@ -19,10 +18,10 @@ export const getTask = async (id: number): Promise<Task | null> => {
     return null;
   }
 
-  return parseTask(task);
+  return deserialize(task);
 };
 
-export const createTask = async (params: TaskParams): Promise<Task> => {
+export const create = async (params: TaskParams): Promise<Task> => {
   const updated: number = await sql.run(
     await getConnection(),
     `INSERT INTO tasks (content) VALUES ('${params.content}')`
@@ -30,15 +29,15 @@ export const createTask = async (params: TaskParams): Promise<Task> => {
 
   assert.strictEqual(updated, 1, "createTask should update 1 row");
 
-  const task = await sql.get<SerialisedTask>(
+  const task = await sql.getOne<SerialisedTask>(
     await getConnection(),
     `SELECT * FROM tasks ORDER BY id DESC LIMIT 1`
   );
 
-  return parseTask(task);
+  return deserialize(task);
 };
 
-export const setTaskComplete = async (
+export const setComplete = async (
   task: Task,
   complete: boolean
 ): Promise<Task> => {
@@ -57,7 +56,7 @@ export const setTaskComplete = async (
   return Object.assign({}, task, { complete, modified: now });
 };
 
-export const setTaskArchived = async (
+export const setArchived = async (
   task: Task,
   archive: boolean
 ): Promise<Task> => {
@@ -74,4 +73,19 @@ export const setTaskArchived = async (
   assert.strictEqual(updated, 1, "setTaskArchived should update 1 row");
 
   return Object.assign({}, task, { archived: archive, modified: now });
+};
+
+export const getAll = async (
+  limit: number,
+  offset: number
+): Promise<Task[]> => {
+  const tasks = await sql.getAll<SerialisedTask>(
+    await getConnection(),
+    `SELECT * from tasks 
+          ORDER BY created
+          LIMIT ${limit} 
+          OFFSET ${offset}`
+  );
+
+  return tasks.map(deserialize);
 };

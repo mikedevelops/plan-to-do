@@ -1,6 +1,6 @@
-import { SerialisedTask, Task } from "./TaskTypes";
+import type { SerialisedTask, Task } from "./TaskTypes";
 
-export const parseTask = (task: SerialisedTask): Task => {
+export const deserialize = (task: SerialisedTask): Task => {
   return {
     id: task.id,
     content: task.content,

@@ -1,8 +1,7 @@
-import getConnection from "~/src/Database/ConnectionFactory";
-import getConfig from "~/src/Config/ConfigLoader";
+import { getConnection } from "~/src/api/Database";
 import { Database } from "sqlite3";
 
-jest.mock("~/src/Config/ConfigLoader", () => () => ({
+jest.mock("~/src/api/Config/ConfigLoader", () => () => ({
   getValue: jest.fn(() => "data/test"),
 }));
 jest.mock("sqlite3", () => ({

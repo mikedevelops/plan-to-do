@@ -1,5 +1,5 @@
 import meow from "meow";
-import { createTask } from "~/src/Tasks/TaskService";
+import { create } from "~/src/api/Tasks/TaskService";
 
 const cli = meow("Create a task", {
   flags: {
@@ -12,6 +12,6 @@ const cli = meow("Create a task", {
 });
 
 (async () => {
-  const task = await createTask({ content: cli.flags.content });
+  const task = await create({ content: cli.flags.content });
   console.log("Created 1 Task", task);
 })();

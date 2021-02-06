@@ -1,23 +1,23 @@
 import meow from "meow";
-import { setTaskArchived, getTask } from "~/src/Tasks/TaskService";
+import { setComplete, getById } from "~/src/api/Tasks/TaskService";
 
-const cli = meow("Set a task (un)archived", {
+const cli = meow("Set a task (in)complete", {
   flags: {
     task: {
       type: "number",
       alias: "t",
       isRequired: true,
     },
-    archived: {
+    complete: {
       type: "boolean",
-      alias: "a",
+      alias: "c",
       default: true,
     },
   },
 });
 
 (async () => {
-  let task = await getTask(cli.flags.task);
+  let task = await getById(cli.flags.task);
 
   if (task === null) {
     console.log(`Unable to find task with id "${cli.flags.task}`);
@@ -25,6 +25,6 @@ const cli = meow("Set a task (un)archived", {
     return;
   }
 
-  task = await setTaskArchived(task, cli.flags.archived);
+  task = await setComplete(task, cli.flags.complete);
   console.log("Updated 1 Task", task);
 })();

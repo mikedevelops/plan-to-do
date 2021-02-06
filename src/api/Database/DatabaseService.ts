@@ -1,4 +1,4 @@
-import { Database, Statement } from "sqlite3";
+import { Database } from "sqlite3";
 
 export const run = async (db: Database, sql: string): Promise<number> => {
   return new Promise((resolve, reject) => {
@@ -14,7 +14,7 @@ export const run = async (db: Database, sql: string): Promise<number> => {
   });
 };
 
-export const all = async <T>(db: Database, sql: string): Promise<T[]> => {
+export const getAll = async <T>(db: Database, sql: string): Promise<T[]> => {
   return new Promise((resolve, reject) => {
     db.all(sql, (err: Error | null, rows: T[]) => {
       if (err !== null) {
@@ -27,7 +27,7 @@ export const all = async <T>(db: Database, sql: string): Promise<T[]> => {
   });
 };
 
-export const get = async <T>(db: Database, sql: string): Promise<T> => {
+export const getOne = async <T>(db: Database, sql: string): Promise<T> => {
   return new Promise((resolve, reject) => {
     db.get(sql, (error: Error | null, result: T) => {
       if (error !== null) {

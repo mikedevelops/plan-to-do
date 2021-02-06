@@ -1,6 +1,6 @@
 import fs from "fs";
-import { ConfigValue } from "~/src/Config/types";
-import getConfig from "~/src/Config/ConfigLoader";
+import { ConfigValue } from "~/src/api/Config/types";
+import getConfig from "~/src/api/Config/ConfigLoader";
 
 jest.mock("fs");
 

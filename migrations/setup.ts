@@ -1,5 +1,5 @@
-import {Database} from "sqlite3";
-import {sqlRun} from "../src/Database/Database";
+import { Database } from "sqlite3";
+import { sqlRun } from "../src/api/Database/Database";
 
 export default async (db: Database): Promise<void> => {
   await sqlRun(`
@@ -12,4 +12,4 @@ export default async (db: Database): Promise<void> => {
       modified TEXT DEFAULT CURRENT_TIMESTAMP
     )
   `);
-}
+};
