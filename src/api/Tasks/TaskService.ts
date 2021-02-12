@@ -24,6 +24,8 @@ export const getById = async (id: number): Promise<Task | null> => {
 };
 
 export const create = async (params: TaskParams): Promise<Task> => {
+  assert.notStrictEqual(params.content, "", "A new task must have content");
+
   const query = `INSERT INTO tasks (content) VALUES ('${params.content}')`;
   const updated: number = await sql.run(await getConnection(), query);
 
@@ -117,4 +119,13 @@ export const getAll = async (
   logSql(query);
 
   return tasks.map(deserialize);
+};
+
+export const remove = async (id: number): Promise<void> => {
+  const query = `
+    DELETE from tasks
+      where id=${id}`;
+  await sql.run(await getConnection(), query);
+
+  logSql(query);
 };

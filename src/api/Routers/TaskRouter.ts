@@ -30,3 +30,15 @@ router.patch("/task/:id", async (req, res) => {
 
   res.json(Tasks.transform(updatedTask));
 });
+
+router.post("/task", async (req, res) => {
+  const task = await Tasks.create({ content: req.body.content });
+
+  return res.json(Tasks.transform(task));
+});
+
+router.delete("/task/:id", async (req, res) => {
+  const id = parseInt(req.params.id as string, 10);
+  await Tasks.remove(id);
+  res.sendStatus(HttpCode.OK);
+});
